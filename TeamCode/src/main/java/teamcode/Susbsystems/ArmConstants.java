@@ -2,41 +2,37 @@ package teamcode.Susbsystems;
 
 public final class ArmConstants {
 
-    public static class ARM_POSITIONS{
+    public static final class PMC {
+        public static int HOME = 0;
+        public static int PICKUP_IN = -1820;
+        public static int PICKUP_OUT = -3000;
+        public static int SCORE = 2350;
 
-        public static class PIVOT{
+        public static int HANG_UP = 100;
+        public static int HANG_DOWN = 100;
+    }
 
-            public static int HOME_POSITION = 0;
-            public static int SCORE_POSITION = 100;
-            public static int GRAB_POSITION = -100;
-            public static int STACK_GRAB_POSITION = 50;
-            public static int HANG_POSITION = 0;
-            public static int CATCH_POSITION = 100;
-        }
+    public static final class EMC {
+        public static int HOME = 0;
+        public static int PICKUP_IN = 0;
+        public static int PICKUP_OUT = -5200;
+        public static int SCORE = -10400;
 
-        public static class EXTEND{
+        public static int HANG_UP = 100;
+        public static int HANG_DOWN = 100;
+    }
 
-            public static int HOME_POSITION = 0;
-            public static int SCORE_POSITION = 100;
-            public static int GRAB_POSITION = -100;
-            public static int STACK_GRAB_POSITION = 50;
-            public static int HANG_POSITION = 0;
-            public static int CATCH_POSITION = 100;
-        }
-        public static class GRAB{
-            public static double GRAB = 0.40;
-            public static double RELEASE = 0.50;
+    public static final class PSC {
+        public static double HOME = 0.3;
+        public static double PICKUP_IN = 0.33;
+        public static double PICKUP_OUT = 0.5;
+        public static double SCORE = 1.0;
+    }
 
-        }
+    public static final class GSC {
+        public static double GRAB = 0.05;
+        public static double RELEASE = 0.2;
 
-        public static class WRIST{
-            public static double GRAB = 1;
-            public static double SCORE = 0;
-        }
-
-        public static class PLANE{
-            public static double SHOOT = 0;
-        }
     }
 
 }

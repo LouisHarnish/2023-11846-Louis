@@ -1,5 +1,6 @@
 package teamcode.Susbsystems;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
@@ -16,7 +17,8 @@ public class ArmSubsystem {
     ArmConstants armConstants;
     private DcMotorEx pivotMotor, extendMotor, intakeMotor;
 
-    private Servo grabServo, launchServo, wristServo;
+    public Servo grabServo, launchServo;
+    public Servo wristServo;
 
     public ArmSubsystem(HardwareMap hardwareMap){
         armConstants = new ArmConstants();
@@ -25,7 +27,7 @@ public class ArmSubsystem {
         extendMotor = hardwareMap.get(DcMotorEx.class,"extendMotor");
         intakeMotor = hardwareMap.get(DcMotorEx.class,"intakeMotor");
         grabServo = hardwareMap.get(Servo.class,"grabServo");
-        launchServo = hardwareMap.get(Servo.class,"launchServo");
+        launchServo = hardwareMap.get(Servo.class,"airplaneServo");
         wristServo = hardwareMap.get(Servo.class,"wristServo");
 
         pivotMotor.setPower(0);
@@ -36,9 +38,9 @@ public class ArmSubsystem {
         extendMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        pivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        intakeMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        extendMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     private double converttoec(double inches) {
@@ -61,26 +63,26 @@ public class ArmSubsystem {
         grabServo.setPosition(v3);
     }
 
-    public void Score(){
-        positions(ArmConstants.ARM_POSITIONS.PIVOT.SCORE_POSITION,ArmConstants.ARM_POSITIONS.EXTEND.SCORE_POSITION,
-                ArmConstants.ARM_POSITIONS.WRIST.SCORE, ArmConstants.ARM_POSITIONS.GRAB.RELEASE);
-    }
-
-    public void Grab() throws InterruptedException {
-        positions(ArmConstants.ARM_POSITIONS.PIVOT.GRAB_POSITION,ArmConstants.ARM_POSITIONS.EXTEND.GRAB_POSITION,
-                ArmConstants.ARM_POSITIONS.WRIST.GRAB, ArmConstants.ARM_POSITIONS.GRAB.RELEASE);
-
-        wait(300);
-
-        grabServo.setPosition(ArmConstants.ARM_POSITIONS.GRAB.GRAB);
-    }
-
-    public void GrabStack() throws InterruptedException {
-        positions(ArmConstants.ARM_POSITIONS.PIVOT.STACK_GRAB_POSITION,ArmConstants.ARM_POSITIONS.EXTEND.STACK_GRAB_POSITION,
-                ArmConstants.ARM_POSITIONS.WRIST.GRAB, ArmConstants.ARM_POSITIONS.GRAB.RELEASE);
-        wait(300);
-        grabServo.setPosition(ArmConstants.ARM_POSITIONS.GRAB.GRAB);
-    }
+//    public void Score(){
+//        positions(ArmConstants.ARM_POSITIONS.PIVOT.SCORE_POSITION,ArmConstants.ARM_POSITIONS.EXTEND.SCORE_POSITION,
+//                ArmConstants.ARM_POSITIONS.WRIST.SCORE, ArmConstants.ARM_POSITIONS.GRAB.RELEASE);
+//    }
+//
+//    public void Grab() throws InterruptedException {
+//        positions(ArmConstants.ARM_POSITIONS.PIVOT.GRAB_POSITION,ArmConstants.ARM_POSITIONS.EXTEND.GRAB_POSITION,
+//                ArmConstants.ARM_POSITIONS.WRIST.GRAB, ArmConstants.ARM_POSITIONS.GRAB.RELEASE);
+//
+//        wait(300);
+//
+//        grabServo.setPosition(ArmConstants.ARM_POSITIONS.GRAB.GRAB);
+//    }
+//
+//    public void GrabStack() throws InterruptedException {
+//        positions(ArmConstants.ARM_POSITIONS.PIVOT.STACK_GRAB_POSITION,ArmConstants.ARM_POSITIONS.EXTEND.STACK_GRAB_POSITION,
+//                ArmConstants.ARM_POSITIONS.WRIST.GRAB, ArmConstants.ARM_POSITIONS.GRAB.RELEASE);
+//        wait(300);
+//        grabServo.setPosition(ArmConstants.ARM_POSITIONS.GRAB.GRAB);
+//    }
     public void pivotM(double p){
         pivotMotor.setPower(p);
     }
@@ -109,15 +111,19 @@ public class ArmSubsystem {
     }
 
     public void grabPixelWrist(){
-        wristServo.setPosition(0);
+        wristServo.setPosition(0.46);
     }
 
     public void scorePixelWrist(){
         wristServo.setPosition(1);
     }
 
+    public void grabStackWrist(){
+        wristServo.setPosition(0.5);
+    }
+
     public void launch(){
-        launchServo.setPosition(1);
+        launchServo.setPosition(0.6);
     }
 
     public void intake(double power){
@@ -128,5 +134,29 @@ public class ArmSubsystem {
         intakeMotor.setPower(power);
         wait(time);
         intakeMotor.setPower(0);
+    }
+
+//    public void Score(){
+//        pivotMotor.setTargetPosition(0);
+//    }
+
+
+    public int pivotPos(){
+        return pivotMotor.getCurrentPosition();
+    }
+
+    public int elePos(){
+        return extendMotor.getCurrentPosition();
+    }
+
+
+    public void resetPivot(){
+        pivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void resetExtend(){
+        extendMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        extendMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 }

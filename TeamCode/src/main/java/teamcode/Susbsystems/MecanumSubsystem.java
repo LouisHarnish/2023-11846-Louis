@@ -18,17 +18,12 @@ public class MecanumSubsystem {
 
     public MecanumSubsystem(HardwareMap hardwareMap){
 
-        leftFront = hardwareMap.get(DcMotorEx.class,"leftFront");
-        leftRear = hardwareMap.get(DcMotorEx.class,"leftRear");
-        rightFront = hardwareMap.get(DcMotorEx.class,"rightFront");
-        rightRear = hardwareMap.get(DcMotorEx.class,"rightRear");
+        leftFront = hardwareMap.get(DcMotorEx.class,"left_front");
+        leftRear = hardwareMap.get(DcMotorEx.class,"left_rear");
+        rightFront = hardwareMap.get(DcMotorEx.class,"right_front");
+        rightRear = hardwareMap.get(DcMotorEx.class,"right_rear");
 
         Drive(0,0,0,0);
-
-        leftFront.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        leftRear.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        rightFront.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        rightRear.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
         leftFront.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         leftRear.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
@@ -60,34 +55,47 @@ public class MecanumSubsystem {
         }
     }
 
-    public void ForwardM(double p){
-        Drive(p,p,p,p);
+    public void TeleOperatedDrive(double forward, double strafe, double turn) {
+
+        double[] speeds = {
+                (forward + strafe + turn),
+                (forward - strafe - turn),
+                (forward - strafe + turn),
+                (forward + strafe - turn)
+        };
+
+        double max = Math.abs(speeds[0]);
+        for(int i = 0; i < speeds.length; i++) {
+            if ( max < Math.abs(speeds[i]) ) max = Math.abs(speeds[i]);
+        }
+
+        if (max > 1) {
+            for (int i = 0; i < speeds.length; i++) speeds[i] /= max;
+        }
+
+        leftFront.setPower(speeds[0]);
+        rightFront.setPower(-1*speeds[1]);
+        leftRear.setPower(speeds[2]);
+        rightRear.setPower(-1*speeds[3]);
     }
 
-    public void TurnM(double p){
-        Drive(p,-p,p,-p);
-    }
-
-    public void SlideM(double p){
-        Drive(-p,-p,p,p);
-    }
 
     public void ForwardA(double p, double i){
-        ForwardM(p);
+        TeleOperatedDrive(p,0,0);
         converttoec(i);
-        ForwardM(0);
+        TeleOperatedDrive(0,0,0);
     }
 
     public void TurnA(double p, double i){
-        TurnM(p);
+        TeleOperatedDrive(0,0,p);
         converttoec(i);
-        TurnM(0);
+        TeleOperatedDrive(0,0,0);
     }
 
     public void SlideA(double p, double i){
-        SlideM(p);
+        TeleOperatedDrive(0,p,0);
         converttoec(i);
-        SlideM(0);
+        TeleOperatedDrive(0,0,0);
     }
 
 }

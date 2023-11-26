@@ -17,8 +17,8 @@ public class SensorSubsystem {
 
     public SensorSubsystem(HardwareMap hardwareMap){
         colorSensor = hardwareMap.get(RevColorSensorV3.class,"colorSensor");
-        touchSensor = hardwareMap.get(TouchSensor.class,"touchSensor");
-        magnetSensor = hardwareMap.get(DigitalChannel.class,"magnetSensor");
+        touchSensor = hardwareMap.get(TouchSensor.class,"armSensor");
+        magnetSensor = hardwareMap.get(DigitalChannel.class,"eleSensor");
     }
 
     public int ReturnColor() {
